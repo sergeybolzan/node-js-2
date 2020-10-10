@@ -10,26 +10,34 @@ router.route('/').get(async (req, res) => {
 router.route('/').post(async (req, res) => {
   const board = new Board(req.body);
   const createdBoard = await boardsService.create(board);
-  return createdBoard
-    ? res.json(createdBoard)
-    : res.status(400).send('Bad request');
+  res.json(createdBoard);
 });
 
 router.route('/:id').get(async (req, res) => {
-  const board = await boardsService.get(req.params.id);
-  return board ? res.json(board) : res.status(404).send('Board not found');
+  try {
+    const board = await boardsService.get(req.params.id);
+    res.json(board);
+  } catch (err) {
+    res.status(404).send(err.message);
+  }
 });
 
 router.route('/:id').put(async (req, res) => {
-  const board = await boardsService.update(req.params.id, req.body);
-  return board ? res.json(board) : res.status(400).send('Bad request');
+  try {
+    const board = await boardsService.update(req.params.id, req.body);
+    res.json(board);
+  } catch (err) {
+    res.status(404).send(err.message);
+  }
 });
 
 router.route('/:id').delete(async (req, res) => {
-  const isRemoved = await boardsService.remove(req.params.id);
-  return isRemoved
-    ? res.sendStatus(204)
-    : res.status(404).send('Board not found');
+  try {
+    await boardsService.remove(req.params.id);
+    res.sendStatus(204);
+  } catch (err) {
+    res.status(404).send(err.message);
+  }
 });
 
 module.exports = router;

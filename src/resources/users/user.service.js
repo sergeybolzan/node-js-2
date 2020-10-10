@@ -10,11 +10,8 @@ const create = user => usersRepo.create(user);
 const update = (id, user) => usersRepo.update(id, user);
 
 const remove = async id => {
-  const isDeleted = await usersRepo.remove(id);
-  if (isDeleted) {
-    await tasksService.updateByUser(id, null);
-  }
-  return isDeleted;
+  await usersRepo.remove(id);
+  await tasksService.updateByUser(id, null);
 };
 
 module.exports = { getAll, get, create, update, remove };

@@ -25,4 +25,10 @@ app.use('/users', userRouter);
 app.use('/boards', boardRouter);
 boardRouter.use('/:boardId/tasks', taskRouter);
 
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(400).send('Bad request');
+  next();
+});
+
 module.exports = app;

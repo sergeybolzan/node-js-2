@@ -8,32 +8,34 @@ const database = {
   Tasks: [new Task(), new Task(), new Task()]
 };
 
-const getAll = tableName => database[tableName];
+const getAll = (tableName, fields = {}) =>
+  database[tableName].filter(entity => isFieldsEquals(entity, fields));
 
-const get = (tableName, id) => {
-  return database[tableName].find(entity => entity.id === id);
-};
+const get = (tableName, fields) =>
+  database[tableName].find(entity => isFieldsEquals(entity, fields));
 
 const add = (tableName, entity) => {
   const table = database[tableName];
   table.push(entity);
-  return get(tableName, entity.id);
+  return get(tableName, { id: entity.id });
 };
 
-const update = (tableName, id, data) => {
+const update = (tableName, fields, data) => {
   const table = database[tableName];
-  const index = table.findIndex(entity => entity.id === id);
-  if (data && index) {
-    table[index] = { id: table[index].id, ...data };
-    return get(tableName, id);
+  const index = table.findIndex(entity => isFieldsEquals(entity, fields));
+  if (data && index > -1) {
+    table[index] = { ...data, id: table[index].id };
+    return get(tableName, { id: fields.id });
   }
 };
 
-const remove = (tableName, id) => {
+const remove = (tableName, fields) => {
   const table = database[tableName];
-  const index = table.findIndex(entity => entity.id === id);
+  const index = table.findIndex(entity => isFieldsEquals(entity, fields));
   const isEntityFound = index > -1;
-  if (isEntityFound) table.splice(index, 1);
+  if (isEntityFound) {
+    table.splice(index, 1);
+  }
   return isEntityFound;
 };
 
@@ -48,6 +50,9 @@ const removeMany = (tableName, key, value) => {
     entity => entity[key] !== value
   );
 };
+
+const isFieldsEquals = (entity, fields) =>
+  Object.keys(fields).every(key => fields[key] === entity[key]);
 
 module.exports = {
   getAll,

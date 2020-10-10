@@ -1,23 +1,38 @@
 const database = require('../../utils/inMemoryDb');
+const TABLE_NAME = 'Tasks';
 
-const getAll = async boardId => {
-  const tasks = database.getAll('Tasks');
-  return tasks.filter(task => task.boardId === boardId);
+const getAll = async boardId => await database.getAll(TABLE_NAME, { boardId });
+
+const get = async (boardId, id) => {
+  const task = await database.get(TABLE_NAME, { boardId, id });
+  if (!task) {
+    throw new Error('Task not found');
+  }
+  return task;
 };
 
-const get = async id => database.get('Tasks', id);
+const create = async task => await database.add(TABLE_NAME, task);
 
-const create = async task => database.add('Tasks', task);
+const update = async (boardId, id, task) => {
+  const updatedTask = await database.update(TABLE_NAME, { boardId, id }, task);
+  if (!updatedTask) {
+    throw new Error('Task not found');
+  }
+  return updatedTask;
+};
 
-const update = async (id, task) => database.update('Tasks', id, task);
-
-const remove = async id => database.remove('Tasks', id);
+const remove = async id => {
+  const isDeleted = await database.remove(TABLE_NAME, { id });
+  if (!isDeleted) {
+    throw new Error('Task not found');
+  }
+};
 
 const removeByField = async (field, value) =>
-  database.removeMany('Tasks', field, value);
+  await database.removeMany(TABLE_NAME, field, value);
 
 const updateByField = async (field, id, value) =>
-  database.updateMany('Tasks', field, id, value);
+  await database.updateMany(TABLE_NAME, field, id, value);
 
 module.exports = {
   getAll,
