@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const { NO_CONTENT } = require('http-status-codes');
 const Board = require('./board.model');
 const boardsService = require('./board.service');
 
@@ -14,30 +15,18 @@ router.route('/').post(async (req, res) => {
 });
 
 router.route('/:id').get(async (req, res) => {
-  try {
-    const board = await boardsService.get(req.params.id);
-    res.json(board);
-  } catch (err) {
-    res.status(404).send(err.message);
-  }
+  const board = await boardsService.get(req.params.id);
+  res.json(board);
 });
 
 router.route('/:id').put(async (req, res) => {
-  try {
-    const board = await boardsService.update(req.params.id, req.body);
-    res.json(board);
-  } catch (err) {
-    res.status(404).send(err.message);
-  }
+  const board = await boardsService.update(req.params.id, req.body);
+  res.json(board);
 });
 
 router.route('/:id').delete(async (req, res) => {
-  try {
-    await boardsService.remove(req.params.id);
-    res.sendStatus(204);
-  } catch (err) {
-    res.status(404).send(err.message);
-  }
+  await boardsService.remove(req.params.id);
+  res.sendStatus(NO_CONTENT);
 });
 
 module.exports = router;

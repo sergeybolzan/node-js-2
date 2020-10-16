@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const { NO_CONTENT } = require('http-status-codes');
 const User = require('./user.model');
 const usersService = require('./user.service');
 
@@ -14,30 +15,18 @@ router.route('/').post(async (req, res) => {
 });
 
 router.route('/:id').get(async (req, res) => {
-  try {
-    const user = await usersService.get(req.params.id);
-    res.json(User.toResponse(user));
-  } catch (err) {
-    res.status(404).send(err.message);
-  }
+  const user = await usersService.get(req.params.id);
+  res.json(User.toResponse(user));
 });
 
 router.route('/:id').put(async (req, res) => {
-  try {
-    const user = await usersService.update(req.params.id, req.body);
-    res.json(User.toResponse(user));
-  } catch (err) {
-    res.status(404).send(err.message);
-  }
+  const user = await usersService.update(req.params.id, req.body);
+  res.json(User.toResponse(user));
 });
 
 router.route('/:id').delete(async (req, res) => {
-  try {
-    await usersService.remove(req.params.id);
-    res.sendStatus(204);
-  } catch (err) {
-    res.status(404).send(err.message);
-  }
+  await usersService.remove(req.params.id);
+  res.sendStatus(NO_CONTENT);
 });
 
 module.exports = router;
