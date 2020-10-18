@@ -17,7 +17,8 @@ const logger = createLogger({
   ],
   rejectionHandlers: [
     new transports.File({ filename: `${LOGS_DIR}/exceptions.log` })
-  ]
+  ],
+  exitOnError: false
 });
 
 if (process.env.NODE_ENV !== 'production') {

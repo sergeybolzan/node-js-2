@@ -3,6 +3,7 @@ const logger = require('../common/logging');
 
 const handler = (err, req, res, next) => {
   if (err.status) {
+    logger.error(err.message);
     res.status(err.status).send(err.message);
   } else {
     logger.error(err.stack);
