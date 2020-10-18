@@ -1,12 +1,14 @@
 const database = require('../../utils/inMemoryDb');
+const NotFoundError = require('../../errors/notFoundError');
 const TABLE_NAME = 'Tasks';
+const ENTITY_NAME = 'Task';
 
 const getAll = async boardId => await database.getAll(TABLE_NAME, { boardId });
 
 const get = async (boardId, id) => {
   const task = await database.get(TABLE_NAME, { boardId, id });
   if (!task) {
-    throw new Error('Task not found');
+    throw new NotFoundError(ENTITY_NAME);
   }
   return task;
 };
@@ -16,7 +18,7 @@ const create = async task => await database.add(TABLE_NAME, task);
 const update = async (boardId, id, task) => {
   const updatedTask = await database.update(TABLE_NAME, { boardId, id }, task);
   if (!updatedTask) {
-    throw new Error('Task not found');
+    throw new NotFoundError(ENTITY_NAME);
   }
   return updatedTask;
 };
@@ -24,7 +26,7 @@ const update = async (boardId, id, task) => {
 const remove = async id => {
   const isDeleted = await database.remove(TABLE_NAME, { id });
   if (!isDeleted) {
-    throw new Error('Task not found');
+    throw new NotFoundError(ENTITY_NAME);
   }
 };
 

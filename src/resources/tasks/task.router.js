@@ -1,4 +1,5 @@
 const router = require('express').Router({ mergeParams: true });
+const { NO_CONTENT } = require('http-status-codes');
 const Task = require('./task.model');
 const tasksService = require('./task.service');
 
@@ -14,34 +15,22 @@ router.route('/').post(async (req, res) => {
 });
 
 router.route('/:id').get(async (req, res) => {
-  try {
-    const task = await tasksService.get(req.params.boardId, req.params.id);
-    res.json(task);
-  } catch (err) {
-    res.status(404).send(err.message);
-  }
+  const task = await tasksService.get(req.params.boardId, req.params.id);
+  res.json(task);
 });
 
 router.route('/:id').put(async (req, res) => {
-  try {
-    const task = await tasksService.update(
-      req.params.boardId,
-      req.params.id,
-      req.body
-    );
-    res.json(task);
-  } catch (err) {
-    res.status(404).send(err.message);
-  }
+  const task = await tasksService.update(
+    req.params.boardId,
+    req.params.id,
+    req.body
+  );
+  res.json(task);
 });
 
 router.route('/:id').delete(async (req, res) => {
-  try {
-    await tasksService.remove(req.params.id);
-    res.sendStatus(204);
-  } catch (err) {
-    res.status(404).send(err.message);
-  }
+  await tasksService.remove(req.params.id);
+  res.sendStatus(NO_CONTENT);
 });
 
 module.exports = router;
