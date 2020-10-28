@@ -1,6 +1,5 @@
 const router = require('express').Router({ mergeParams: true });
 const { NO_CONTENT } = require('http-status-codes');
-const Task = require('./task.model');
 const tasksService = require('./task.service');
 const validator = require('../../utils/validation/validator');
 const schemas = require('../../utils/validation/schemas');
@@ -11,9 +10,11 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', validator(schemas.task), async (req, res) => {
-  const task = new Task({ ...req.body, boardId: req.params.boardId });
-  const createdTask = await tasksService.create(task);
-  res.json(createdTask);
+  const task = await tasksService.create({
+    ...req.body,
+    boardId: req.params.boardId
+  });
+  res.json(task);
 });
 
 router.get('/:id', async (req, res) => {
@@ -31,7 +32,7 @@ router.put('/:id', validator(schemas.task), async (req, res) => {
 });
 
 router.delete('/:id', async (req, res) => {
-  await tasksService.remove(req.params.id);
+  await tasksService.remove(req.params.boardId, req.params.id);
   res.sendStatus(NO_CONTENT);
 });
 

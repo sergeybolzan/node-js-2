@@ -1,6 +1,5 @@
 const router = require('express').Router();
 const { NO_CONTENT } = require('http-status-codes');
-const Board = require('./board.model');
 const boardsService = require('./board.service');
 const validator = require('../../utils/validation/validator');
 const schemas = require('../../utils/validation/schemas');
@@ -11,9 +10,8 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', validator(schemas.board), async (req, res) => {
-  const board = new Board(req.body);
-  const createdBoard = await boardsService.create(board);
-  res.json(createdBoard);
+  const board = await boardsService.create(req.body);
+  res.json(board);
 });
 
 router.get('/:id', async (req, res) => {

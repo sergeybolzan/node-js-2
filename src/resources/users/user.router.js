@@ -11,9 +11,8 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', validator(schemas.user), async (req, res) => {
-  const user = new User(req.body);
-  const createdUser = await usersService.create(user);
-  res.json(User.toResponse(createdUser));
+  const user = await usersService.create(req.body);
+  res.json(User.toResponse(user));
 });
 
 router.get('/:id', async (req, res) => {
