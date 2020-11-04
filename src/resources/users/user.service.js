@@ -3,7 +3,7 @@ const tasksService = require('../tasks/task.service');
 
 const getAll = () => usersRepo.getAll();
 
-const get = id => usersRepo.get(id);
+const get = id => usersRepo.get({ id });
 
 const create = user => usersRepo.create(user);
 

@@ -6,6 +6,8 @@ const morgan = require('morgan');
 require('express-async-errors');
 const logger = require('./common/logging');
 const errorHandler = require('./errors/errorHandler');
+const checkToken = require('./common/checkToken');
+const loginRouter = require('./resources/login/login.router');
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/board.router');
 const taskRouter = require('./resources/tasks/task.router');
@@ -30,6 +32,9 @@ app.use(
     stream: logger.stream
   })
 );
+
+app.use('/login', loginRouter);
+app.use(checkToken);
 
 app.use('/users', userRouter);
 app.use('/boards', boardRouter);
