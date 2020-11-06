@@ -12,18 +12,11 @@ const get = async filter => {
   return user;
 };
 
-const create = async user => {
-  const { password } = user;
-  const hashedPassword = await hashPassword(password);
-  const newUser = {
-    ...user,
-    password: hashedPassword
-  };
-  return User.create(newUser);
-};
+const create = async user => User.create(await hashUserPassword(user));
 
 const update = async (id, user) => {
-  const updatedUser = await User.updateOne({ id }, user);
+  const userWithHashedPassword = await hashUserPassword(user);
+  const updatedUser = await User.updateOne({ id }, userWithHashedPassword);
   if (!updatedUser) {
     throw new NotFoundError(User.modelName);
   }
@@ -35,6 +28,15 @@ const remove = async id => {
   if (!deletedCount) {
     throw new NotFoundError(User.modelName);
   }
+};
+
+const hashUserPassword = async user => {
+  const { password } = user;
+  const hashedPassword = await hashPassword(password);
+  return {
+    ...user,
+    password: hashedPassword
+  };
 };
 
 module.exports = { getAll, get, create, update, remove };
